@@ -1,49 +1,219 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="bs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="chart/Chart.min.css" rel="stylesheet">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="chart/Chart.js"></script>
+    <script src="chart/Chart.min.js"></script>
+    <!-- <script src="ab.js"></script> -->
+    <title>DrugRec</title>
+
+    <style>
+        body,
+      html {
+        height: 100%;
+        margin: 0;
+        size: 17px;
+        font-family: Avenir;
+        /* position: absolute; */
+      }
+
+      .tablink {
+        margin: 0;
+        background-color: #ffff;
+        color: black;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        font-size: 17px;
+        width: 25%;
+        font-family: Avenir;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+
+      function toSimpleJson(serializedData) {
+    var ar1 = serializedData.split("&");
+    var json = "{";
+    for (var i = 0; i<ar1.length; i++) {
+        var ar2 = ar1[i].split("=");
+        json += i > 0 ? ", " : "";
+        json += "\"" + ar2[0] + "\" : ";
+        json += "\"" + (ar2.length < 2 ? "" : ar2[1]) + "\"";
+    }
+    json += "}";
+    return json;
+}
+
+      // $(document).keydown(
+
+        function sendParameters(){
+            var json = toSimpleJson($("#input").serialize());
+            var arr = JSON.parse(json);
+            getPerscriptions(arr["age"], arr["gender"], arr["condition"]);
+        }
+
+        function getPerscriptions(age, gender, condition){
+            document.getElementById("output-age").innerHTML = age;
+            document.getElementById("output-gender").innerHTML = gender;
+            document.getElementById("output-condition").innerHTML = condition;
+        }
+    </script>
+      <h2 style="text-align: center; font-weight: 600">
+        Drug Recommendation
+      </h2>
+      <form id="input" onsubmit="return false;" action="#">
+        <h5 style="margin: 20px; font-size: 17px">
+          Age:
+          <span style="float: right; display: inline; font-size: 15px">
+            <input
+              name="age"
+              type="number"
+              pattern="\d*"
+              autocomplete="off"
+              style="width: 40px"
+            />
+          </span>
+        </h5>
+        <h5 style="margin: 20px; font-size: 17px">
+          Gender:
+          <select name="gender" id="gender" style="float: right; display: inline; width: 100px; background: white; font-size: 15px">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+        </h5>
+
+        <h5 style="margin: 20px; font-size: 17px; margin-top: 5px">
+          Condition:
+          <span style="float: right; display: inline; font-size: 15px">
+            <input
+              name="condition"
+              type="text" 
+              autocomplete="off"
+              style="width: 200px"
+            />
+          </span>
+        </h5>
+        <br>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-primary" style="text-align: center" onclick="sendParameters()">Submit</button>
+        </div>    
+      </form>
+
+      <h5 style="margin: 20px; font-size: 17px">
+            Age
+            <div id="output-age" style="float: right">0</div>
+          </h5>
+    <h5 style="margin: 20px; font-size: 17px">
+            Gender
+            <div id="output-gender" style="float: right">None</div>
+          </h5>
+    <h5 style="margin: 20px; font-size: 17px">
+            Condition
+            <div id="output-condition" style="float: right">None</div>
+          </h5>
+
+          <canvas id="myChart" width="20px" height="20px"></canvas>
+          <script>
+
+        function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+        }
+        dict = {"Advil": 23, "Ibuprofin": 65, "Tylenol": 45, "LSD": 73, "Weed": 99};
+        baked = Object.values(dict);
+        baked = baked.sort();
+        stuff = [];
+        for(var i = 0; i < baked.length; i++){
+            stuff[i] = getKeyByValue(dict, baked[i]);
+        }
+
+        stuff = stuff.reverse()
+        baked= baked.reverse()
+
+
+        var ctx = document.getElementById('myChart');
+        //   ctx.canvas.width = 3000;
+        //   ctx.canvas.height = 3000;
+          var myChart = new Chart(ctx, {
+              type: 'horizontalBar',
+              responsive: true,
+              options: opt,
+            //   showTooltips: false,
+            //   maintainAspectRatio: true,
+              data: {
+                  labels: stuff,
+                  datasets: [{
+                      label: 'Percent Match',
+                      data: baked,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              onAnimationComplete: function () {
+                var ctx = this.chart.ctx;
+                ctx.font = this.scale.font;
+                ctx.fillStyle = this.scale.textColor
+                ctx.textAlign = "center";
+                ctx.textBaseline = "bottom";
+
+                this.datasets.forEach(function (dataset) {
+                    dataset.bars.forEach(function (bar) {
+                        ctx.fillText(bar.value, bar.x, bar.y - 5);
+                    });
+                })
+            },
+              options: {
+                  legend: {
+                      display: false
+                  },
+                  scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Percent Match (%)'
+                        },
+
+                          ticks: {
+                              beginAtZero: true,
+                              max: 100,
+                              stepSize: 10
+                          }
+                      }],
+
+                      yAxes: [{
+                          scaleLabel: {
+                              display: true,
+                              labelString: 'Perscription'
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+
+    </div>
+  </body>
 </html>
