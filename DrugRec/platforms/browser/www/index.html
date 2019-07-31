@@ -62,6 +62,10 @@
         }
 
         function getPerscriptions(age, gender, condition){
+            while(condition.indexOf("%20")>=0)
+              condition = condition.replace("%20", " ");
+            console.log(condition)
+
             document.getElementById("output-age").innerHTML = age;
             document.getElementById("output-gender").innerHTML = gender;
             document.getElementById("output-condition").innerHTML = condition;
@@ -71,7 +75,7 @@
         Drug Recommendation
       </h2>
       <form id="input" onsubmit="return false;" action="#">
-        <h5 style="margin: 20px; font-size: 17px">
+        <h5 style="margin: 20px; font-size: 17px; font-weight: bold">
           Age:
           <span style="float: right; display: inline; font-size: 15px">
             <input
@@ -83,7 +87,7 @@
             />
           </span>
         </h5>
-        <h5 style="margin: 20px; font-size: 17px">
+        <h5 style="margin: 20px; font-size: 17px; font-weight: bold">
           Gender:
           <select name="gender" id="gender" style="float: right; display: inline; width: 100px; background: white; font-size: 15px">
                 <option value="Male">Male</option>
@@ -91,7 +95,7 @@
               </select>
         </h5>
 
-        <h5 style="margin: 20px; font-size: 17px; margin-top: 5px">
+        <h5 style="margin: 20px; font-size: 17px; margin-top: 5px; font-weight: bold">
           Condition:
           <span style="float: right; display: inline; font-size: 15px">
             <input
@@ -108,15 +112,15 @@
         </div>    
       </form>
 
-      <h5 style="margin: 20px; font-size: 17px">
+      <h5 style="margin: 20px; font-size: 17px; font-weight: bold">
             Age
             <div id="output-age" style="float: right">0</div>
           </h5>
-    <h5 style="margin: 20px; font-size: 17px">
+    <h5 style="margin: 20px; font-size: 17px; font-weight: bold">
             Gender
             <div id="output-gender" style="float: right">None</div>
           </h5>
-    <h5 style="margin: 20px; font-size: 17px">
+    <h5 style="margin: 20px; font-size: 17px; font-weight: bold">
             Condition
             <div id="output-condition" style="float: right">None</div>
           </h5>
